@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Saved Resumes</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 10px; }
+    th { background-color: #f8f8f8; }
+  </style>
+</head>
+<body>
+  <h2>Parsed Resume Submissions</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Job Title</th>
+        <th>City</th>
+        <th>Education</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for resume in resumes %}
+      <tr>
+        <td>{{ resume.name }}</td>
+        <td>{{ resume.email }}</td>
+        <td>{{ resume.phone }}</td>
+        <td>{{ resume.jobTitle }}</td>
+        <td>{{ resume.city }}</td>
+        <td>{{ resume.education }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

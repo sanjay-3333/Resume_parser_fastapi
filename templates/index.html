@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume Parser</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>AI Resume Parser</h1>
+
+    <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+      <input type="file" name="resume" accept=".pdf" required />
+      <button type="submit">Upload & Parse</button>
+    </form>
+
+    {% if parsed %}
+    <div class="card">
+      <h2>Parsed Details</h2>
+
+      <a href="/download" target="_blank">
+        <button style="margin-top: 20px;">Download as PDF</button>
+      </a>
+
+      <div class="grid">
+        <p><strong>Name:</strong> {{ parsed.name }}</p>
+        <p><strong>Email:</strong> {{ parsed.email }}</p>
+        <p><strong>Phone:</strong> {{ parsed.phone }}</p>
+        <p><strong>Job Title:</strong> {{ parsed.jobTitle }}</p>
+        <p><strong>Age:</strong> {{ parsed.age or "N/A" }}</p>
+        <p><strong>Location:</strong> {{ parsed.fullAddress or "N/A" }}</p>
+        <p><strong>Languages:</strong> {{ parsed.languages | join(', ') }}</p>
+        <p><strong>Skills:</strong> {{ parsed.skills | join(', ') }}</p>
+        <p><strong>Expected Salary:</strong> {{ parsed.expectedSalary or "N/A" }}</p>
+        <p><strong>Education:</strong> {{ parsed.education or "N/A" }}</p>
+      </div>
+
+      <h3>Education History</h3>
+      <ul>
+        {% for edu in parsed.educationHistory %}
+          <li>{{ edu }}</li>
+        {% endfor %}
+      </ul>
+
+      <h3>Socials</h3>
+      <ul>
+        <li><strong>LinkedIn:</strong>
+          {% if parsed.socials.linkedin %}
+            <a href="{{ parsed.socials.linkedin }}" target="_blank">{{ parsed.socials.linkedin }}</a>
+          {% else %}
+            Not provided
+          {% endif %}
+        </li>
+        <li><strong>GitHub:</strong>
+          {% if parsed.socials.github %}
+            <a href="{{ parsed.socials.github }}" target="_blank">{{ parsed.socials.github }}</a>
+          {% else %}
+            Not provided
+          {% endif %}
+        </li>
+        <li><strong>Portfolio:</strong>
+          {% if parsed.socials.portfolio %}
+            <a href="{{ parsed.socials.portfolio }}" target="_blank">{{ parsed.socials.portfolio }}</a>
+          {% else %}
+            Not provided
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

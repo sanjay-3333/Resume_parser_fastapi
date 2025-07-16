@@ -1,0 +1,110 @@
+python
+java
+c
+c++
+c#
+javascript
+typescript
+html
+css
+react
+angular
+vue
+node.js
+express
+django
+flask
+spring
+spring boot
+next.js
+jquery
+sql
+mysql
+postgresql
+oracle
+mongodb
+firebase
+json
+xml
+api development
+rest api
+graphql
+bash
+shell scripting
+linux
+git
+github
+bitbucket
+ci/cd
+docker
+kubernetes
+jenkins
+ansible
+aws
+azure
+google cloud
+gcp
+lambda
+s3
+ec2
+cloud functions
+cloud storage
+firebase functions
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+tensorflow
+keras
+pytorch
+machine learning
+deep learning
+natural language processing
+nlp
+openai
+transformers
+llm
+data science
+data analysis
+data visualization
+tableau
+power bi
+excel
+vlookup
+pivot tables
+statistics
+probability
+sql tuning
+jira
+confluence
+scrum
+agile
+kanban
+project management
+problem solving
+critical thinking
+communication
+leadership
+time management
+teamwork
+presentation
+fastapi
+gradio
+streamlit
+selenium
+beautifulsoup
+openai api
+hugging face
+computer vision
+ocr
+aws sagemaker
+firebase
+cloud firestore
+web scraping
+api integration
+http requests
+debugging
+unit testing
+integration testing
+test automation
