@@ -20,3 +20,5 @@ class Resume(SQLModel, table=True):
     github: Optional[str]
     portfolio: Optional[str]
     socials: Optional[str]
+    cv_url: Optional[str]            # Cloudinary resume link
+    projectSummary: Optional[str] 

@@ -7,6 +7,7 @@
     table { border-collapse: collapse; width: 100%; }
     th, td { border: 1px solid #ccc; padding: 10px; }
     th { background-color: #f8f8f8; }
+    a { color: blue; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -20,6 +21,7 @@
         <th>Job Title</th>
         <th>City</th>
         <th>Education</th>
+        <th>Resume File</th> <!-- New column -->
       </tr>
     </thead>
     <tbody>
@@ -31,6 +33,13 @@
         <td>{{ resume.jobTitle }}</td>
         <td>{{ resume.city }}</td>
         <td>{{ resume.education }}</td>
+        <td>
+          {% if resume.cv_url %}
+            <a href="{{ resume.cv_url }}" target="_blank">View CV</a>
+          {% else %}
+            Not Uploaded
+          {% endif %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>

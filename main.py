@@ -10,6 +10,8 @@ import shutil
 import json
 from typing import List
 from fpdf import FPDF
+from cloudinary.uploader import upload as cloudinary_upload
+from cloudinary_config import cloudinary
 
 # -------------------------
 # Helper to sanitize unicode text for PDF
@@ -60,6 +62,19 @@ async def upload_resume(request: Request, resume: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(resume.file, buffer)
 
+        # Get client IP address and sanitize it
+        client_ip = request.client.host.replace(".", "_")
+
+        # Upload to Cloudinary
+        cloud_result = cloudinary_upload(
+            file_path,
+            public_id=f"resumes/{client_ip}",
+            resource_type="raw",
+            overwrite=True
+        )
+
+        cloud_url = cloud_result["secure_url"]
+
         # Parse resume data
         data = parse_resume_from_path(file_path)
 
@@ -83,7 +98,8 @@ async def upload_resume(request: Request, resume: UploadFile = File(...)):
                 educationHistory="\n".join(data["educationHistory"]),
                 linkedin=data["socials"].get("linkedin", ""),
                 github=data["socials"].get("github", ""),
-                portfolio=data["socials"].get("portfolio", "")
+                portfolio=data["socials"].get("portfolio", ""),
+                cv_url=cloud_url
             )
             session.add(resume_record)
             session.commit()
@@ -93,7 +109,7 @@ async def upload_resume(request: Request, resume: UploadFile = File(...)):
         return templates.TemplateResponse("index.html", {
             "request": request,
             "parsed": data,
-            "pdf_url": "/download"
+            "pdf_url": cloud_url
         })
 
     except Exception as e:
