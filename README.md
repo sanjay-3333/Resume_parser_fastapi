@@ -1,43 +1,101 @@
-# 🧠 AI Resume Parser (FastAPI)
+An AI-powered resume parser built with FastAPI, Bootstrap, and Cloudinary for file storage, supporting structured resume extraction and PDF export.
 
-A FastAPI-based application to intelligently parse PDF resumes and extract structured data like contact info, skills, education, experience, and social links. Parsed data is stored in a database and resumes are backed up to Cloudinary using the user's IP as the filename.
+🚀 Features
+✔ Upload & Parse Resumes (PDF)
+✔ AI-driven Resume Data Extraction
+✔ Cloud Storage Integration (Cloudinary)
+✔ IP-based Resume Naming for Uniqueness
+✔ Responsive Bootstrap UI (Corporate Design)
+✔ View Resumes in Dashboard with Pagination & Search
+✔ Detailed View in Modal (AJAX)
+✔ Download Parsed Resume as PDF
+✔ SQLite Database with SQLModel ORM
+✔ Secure via Environment Variables (.env)
 
----
+🛠 Tech Stack
+Backend: FastAPI, SQLModel
 
-## 🔧 Tech Stack
+Frontend: HTML, Bootstrap 5, Jinja2
 
-- 🏃 FastAPI – High-performance Python web framework
-- 🗃️ SQLModel + SQLite – Lightweight, modern ORM
-- 🧠 NLP – spaCy, NLTK for language understanding
-- 📄 PDF Parsing – PDFMiner
-- 🎨 Jinja2 Templates + Bootstrap for UI
-- ☁️ Cloudinary for file storage
+Database: SQLite
 
----
+Cloud Storage: Cloudinary
 
-## 🚀 Features
+PDF Generation: FPDF
 
-✅ Upload resumes in PDF format  
-✅ Parse the following from the document:
-- Name, Email, Phone
-- Address (City, Country, Full Address)
-- Skills & Languages
-- Education & Education History
-- Job Title, Age, Years of Experience
-- Expected Salary
-- Socials: LinkedIn, GitHub, Portfolio
+Others: dotenv, mimetypes
 
-✅ Save resume PDF to Cloudinary using client IP as part of filename  
-✅ View all parsed resumes at `/resumes`  
-✅ Download parsed summary PDF  
-✅ View or download original PDF from Cloudinary
+📂 Project Structure
+bash
+Copy
+Edit
+resume_parser_fastapi/
+│
+├── main.py                 # FastAPI backend logic
+├── models.py               # SQLModel database models
+├── parser.py               # Resume parsing logic
+├── templates/
+│   ├── index.html          # Home page
+│   ├── resumes.html        # Uploaded resumes page
+├── static/
+│   ├── bootstrap.min.css
+│   ├── bootstrap.bundle.min.js
+│   └── favicon.ico
+├── uploads/                # Temporary uploads
+├── resumes.db              # SQLite DB
+├── output_resume.pdf       # Generated PDF
+└── .env                    #Environment variables
 
----
 
-## 📦 Installation
 
-### 1. Clone the repo
+⚙️ Setup Instructions
+1. Clone Repository
+bash
+Copy
+Edit
+git clone https://github.com/sanjay-3333/Resume_parser_fastapi.git
+cd Resume_parser_fastapi
 
-```bash
-git clone https://github.com/yourusername/ai-resume-parser.git
-cd ai-resume-parser
+
+2. Create Virtual Environment & Install Dependencies
+bash
+Copy
+Edit
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+
+pip install -r requirements.txt
+
+
+3. Configure Environment Variables
+Create a .env file:
+
+ini
+Copy
+Edit
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+
+4. Run the Application
+bash
+Copy
+Edit
+uvicorn main:app --reload
+Visit: http://127.0.0.1:8000
+
+📌 Usage
+Upload Resume: Extracts structured details (Name, Email, Skills, etc.)
+
+View All Resumes: Paginated, searchable dashboard
+
+View Details: Modal with full resume data
+
+Download Parsed Resume: PDF with extracted info
+
+🔗 Links
+Cloudinary Docs:https://cloudinary.com/documentation
+
+FastAPI Docs:https://fastapi.tiangolo.com/
