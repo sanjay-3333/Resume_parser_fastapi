@@ -1,0 +1,5 @@
+project-root/
+    static/
+        favicon.ico
+        bootstrap.min.css
+        bootstrap.bundle.min.js

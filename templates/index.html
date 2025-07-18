@@ -1,74 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Resume Parser</title>
-  <link rel="stylesheet" href="/static/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Resume Parser</title>
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+    .container {
+      max-width: 950px;
+      background: #fff;
+      padding: 30px;
+      margin-top: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+    h1 {
+      text-align: center;
+      color: #0d6efd;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
+    .btn-custom {
+      margin-right: 10px;
+    }
+    .card {
+      border-radius: 10px;
+      border: 1px solid #e5e5e5;
+    }
+    .section-title {
+      font-weight: 600;
+      color: #0d6efd;
+      margin-top: 15px;
+      font-size: 1.1rem;
+    }
+    .parsed-details p {
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>AI Resume Parser</h1>
 
-    <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
-      <input type="file" name="resume" accept=".pdf" required />
-      <button type="submit">Upload & Parse</button>
+    <!-- Upload Form -->
+    <form action="/upload" method="post" enctype="multipart/form-data" class="mb-4">
+      <div class="mb-3">
+        <label for="resume" class="form-label fw-semibold">Upload Resume (PDF only)</label>
+        <input type="file" name="resume" id="resume" accept=".pdf" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-custom">Upload & Parse</button>
+      <a href="/resumes" class="btn btn-outline-secondary">View All Uploaded Resumes</a>
     </form>
 
     {% if parsed %}
-    <div class="card">
-      <h2>Parsed Details</h2>
+    <!-- Parsed Data Section -->
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="text-primary mb-3">Parsed Resume Details</h4>
+        <div class="parsed-details">
+          <p><strong>Name:</strong> {{ parsed.name or "N/A" }}</p>
+          <p><strong>Email:</strong> {{ parsed.email or "N/A" }}</p>
+          <p><strong>Phone:</strong> {{ parsed.phone or "N/A" }}</p>
+          <p><strong>Job Title:</strong> {{ parsed.jobTitle or "N/A" }}</p>
+          <p><strong>Age:</strong> {{ parsed.age or "N/A" }}</p>
+          <p><strong>Location:</strong> {{ parsed.fullAddress or "N/A" }}</p>
+          <p><strong>City:</strong> {{ parsed.city or "N/A" }}</p>
+          <p><strong>Country:</strong> {{ parsed.country or "N/A" }}</p>
+          <p><strong>Years of Experience:</strong> {{ parsed.yearsOfExp or "N/A" }}</p>
+          <p><strong>Profile Summary:</strong> {{ parsed.profileDescription or "N/A" }}</p>
+          <p><strong>Languages:</strong> {{ parsed.languages or "N/A" }}</p>
+          <p><strong>Skills:</strong> {{ parsed.skills or "N/A" }}</p>
+          <p><strong>Expected Salary:</strong> {{ parsed.expectedSalary or "N/A" }}</p>
+          <p><strong>Education:</strong> {{ parsed.education or "N/A" }}</p>
 
-      <a href="/download" target="_blank">
-        <button style="margin-top: 20px;">Download as PDF</button>
-      </a>
+          <div class="section-title">Education History</div>
+          <p>{{ parsed.educationHistory or "N/A" }}</p>
 
-      <div class="grid">
-        <p><strong>Name:</strong> {{ parsed.name }}</p>
-        <p><strong>Email:</strong> {{ parsed.email }}</p>
-        <p><strong>Phone:</strong> {{ parsed.phone }}</p>
-        <p><strong>Job Title:</strong> {{ parsed.jobTitle }}</p>
-        <p><strong>Age:</strong> {{ parsed.age or "N/A" }}</p>
-        <p><strong>Location:</strong> {{ parsed.fullAddress or "N/A" }}</p>
-        <p><strong>Languages:</strong> {{ parsed.languages | join(', ') }}</p>
-        <p><strong>Skills:</strong> {{ parsed.skills | join(', ') }}</p>
-        <p><strong>Expected Salary:</strong> {{ parsed.expectedSalary or "N/A" }}</p>
-        <p><strong>Education:</strong> {{ parsed.education or "N/A" }}</p>
+          <div class="section-title">Social Links</div>
+          <p><strong>LinkedIn:</strong> {{ parsed.socials.linkedin or "N/A" }}</p>
+          <p><strong>GitHub:</strong> {{ parsed.socials.github or "N/A" }}</p>
+          <p><strong>Portfolio:</strong> {{ parsed.socials.portfolio or "N/A" }}</p>
+        </div>
+
+        <!-- Download Parsed Resume -->
+        <a href="/resume/{{ last_resume_id }}/download" class="btn btn-success btn-custom mt-3">Download Parsed Resume</a>
       </div>
-
-      <h3>Education History</h3>
-      <ul>
-        {% for edu in parsed.educationHistory %}
-          <li>{{ edu }}</li>
-        {% endfor %}
-      </ul>
-
-      <h3>Socials</h3>
-      <ul>
-        <li><strong>LinkedIn:</strong>
-          {% if parsed.socials.linkedin %}
-            <a href="{{ parsed.socials.linkedin }}" target="_blank">{{ parsed.socials.linkedin }}</a>
-          {% else %}
-            Not provided
-          {% endif %}
-        </li>
-        <li><strong>GitHub:</strong>
-          {% if parsed.socials.github %}
-            <a href="{{ parsed.socials.github }}" target="_blank">{{ parsed.socials.github }}</a>
-          {% else %}
-            Not provided
-          {% endif %}
-        </li>
-        <li><strong>Portfolio:</strong>
-          {% if parsed.socials.portfolio %}
-            <a href="{{ parsed.socials.portfolio }}" target="_blank">{{ parsed.socials.portfolio }}</a>
-          {% else %}
-            Not provided
-          {% endif %}
-        </li>
-      </ul>
     </div>
     {% endif %}
   </div>
+  <script src="/static/bootstrap.bundle.min.js"></script>
 </body>
 </html>

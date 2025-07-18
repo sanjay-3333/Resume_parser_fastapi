@@ -1,48 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Saved Resumes</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uploaded Resumes</title>
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 10px; }
-    th { background-color: #f8f8f8; }
-    a { color: blue; text-decoration: underline; }
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      margin-top: 40px;
+    }
+    h1 {
+      font-weight: bold;
+      color: #0d6efd;
+    }
+    .table-hover tbody tr:hover {
+      background-color: #f1f5ff;
+    }
+    .search-bar {
+      max-width: 350px;
+      margin-bottom: 15px;
+    }
+    .modal-lg {
+      max-width: 900px;
+    }
+    .modal-body {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .section-title {
+      font-weight: bold;
+      color: #0d6efd;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <h2>Parsed Resume Submissions</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Job Title</th>
-        <th>City</th>
-        <th>Education</th>
-        <th>Resume File</th> <!-- New column -->
-      </tr>
-    </thead>
-    <tbody>
-      {% for resume in resumes %}
-      <tr>
-        <td>{{ resume.name }}</td>
-        <td>{{ resume.email }}</td>
-        <td>{{ resume.phone }}</td>
-        <td>{{ resume.jobTitle }}</td>
-        <td>{{ resume.city }}</td>
-        <td>{{ resume.education }}</td>
-        <td>
-          {% if resume.cv_url %}
-            <a href="{{ resume.cv_url }}" target="_blank">View CV</a>
-          {% else %}
-            Not Uploaded
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="container">
+    <h1 class="mb-4">Uploaded Resumes</h1>
+
+    <!-- Search Bar -->
+    <input type="text" id="searchInput" class="form-control search-bar" placeholder="Search resumes...">
+
+    <!-- Resumes Table -->
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle">
+        <thead class="table-primary">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Job Title</th>
+            <th>Skills</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="resumeTable">
+          {% for r in resumes %}
+          <tr>
+            <td>{{ loop.index + ((page-1)*page_size) }}</td>
+            <td>{{ r.name or "N/A" }}</td>
+            <td>{{ r.email or "N/A" }}</td>
+            <td>{{ r.jobTitle or "N/A" }}</td>
+            <td>{{ r.skills or "N/A" }}</td>
+            <td>
+              <button class="btn btn-info btn-sm" onclick="viewDetails({{ r.id }})">
+                <i class="bi bi-eye"></i> View
+              </button>
+              <a href="/resume/{{ r.id }}/download" class="btn btn-success btn-sm">
+                <i class="bi bi-download"></i> Download
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav>
+      <ul class="pagination">
+        {% for i in range(1, total_pages+1) %}
+        <li class="page-item {% if i == page %}active{% endif %}">
+          <a class="page-link" href="/resumes?page={{ i }}">{{ i }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+
+  <!-- View Details Modal -->
+  <div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Resume Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalContent">
+          <p>Loading...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/bootstrap.bundle.min.js"></script>
+  <script>
+    // Client-side search
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+      const value = this.value.toLowerCase();
+      document.querySelectorAll('#resumeTable tr').forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(value) ? '' : 'none';
+      });
+    });
+
+    // Fetch resume details and show modal
+    async function viewDetails(id) {
+      const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+      const modalBody = document.getElementById('modalContent');
+      modalBody.innerHTML = '<p>Loading details...</p>';
+      modal.show();
+
+      try {
+        const response = await fetch(`/resume/${id}/details`);
+        if (!response.ok) {
+          modalBody.innerHTML = '<p class="text-danger">Failed to load details.</p>';
+          return;
+        }
+        const data = await response.json();
+        modalBody.innerHTML = `
+          <div>
+            <h5 class="section-title">Personal Information</h5>
+            <p><strong>Name:</strong> ${data.name || 'N/A'}</p>
+            <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+            <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+            <p><strong>Job Title:</strong> ${data.jobTitle || 'N/A'}</p>
+            <p><strong>Age:</strong> ${data.age || 'N/A'}</p>
+            <p><strong>Address:</strong> ${data.fullAddress || 'N/A'}</p>
+
+            <h5 class="section-title">Skills & Languages</h5>
+            <p><strong>Skills:</strong> ${data.skills || 'N/A'}</p>
+            <p><strong>Languages:</strong> ${data.languages || 'N/A'}</p>
+
+            <h5 class="section-title">Education</h5>
+            <p>${data.educationHistory || 'N/A'}</p>
+
+            <h5 class="section-title">Social Links</h5>
+            <p><strong>LinkedIn:</strong> ${data.linkedin || 'N/A'}</p>
+            <p><strong>GitHub:</strong> ${data.github || 'N/A'}</p>
+            <p><strong>Portfolio:</strong> ${data.portfolio || 'N/A'}</p>
+          </div>
+        `;
+      } catch (error) {
+        modalBody.innerHTML = '<p class="text-danger">Error loading details.</p>';
+      }
+    }
+  </script>
 </body>
 </html>
